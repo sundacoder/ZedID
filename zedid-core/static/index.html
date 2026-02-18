@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZedID — Identity Dashboard & Policy Generator</title>
+  <meta name="description" content="ZedID: Zero-trust identity dashboard and AI-powered policy generator built with Rust and Tetrate TARS." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <!-- Animated background -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+  <div class="bg-glow bg-glow-3"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M14 2L25 8V20L14 26L3 20V8L14 2Z" stroke="url(#logoGrad)" stroke-width="2" fill="none"/>
+          <path d="M14 7L20 10.5V17.5L14 21L8 17.5V10.5L14 7Z" fill="url(#logoGrad)" opacity="0.6"/>
+          <circle cx="14" cy="14" r="3" fill="url(#logoGrad)"/>
+          <defs>
+            <linearGradient id="logoGrad" x1="3" y1="2" x2="25" y2="26" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#60a5fa"/>
+              <stop offset="100%" stop-color="#a78bfa"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-name">ZedID</span>
+        <span class="logo-tagline">Zero Trust Identity</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">OVERVIEW</div>
+      <a href="#" class="nav-item active" data-view="dashboard" id="nav-dashboard">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>
+        Dashboard
+      </a>
+
+      <div class="nav-section-label">IDENTITY</div>
+      <a href="#" class="nav-item" data-view="identities" id="nav-identities">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
+        Identities
+        <span class="nav-badge" id="identity-count-badge">9</span>
+      </a>
+      <a href="#" class="nav-item" data-view="svid" id="nav-svid">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6.625 2.655A9 9 0 0119 11a1 1 0 11-2 0 7 7 0 00-9.625-6.492 1 1 0 11-.75-1.853zM4.662 4.959A1 1 0 014.75 6.37 6.97 6.97 0 003 11a1 1 0 11-2 0 8.97 8.97 0 012.25-5.953 1 1 0 011.412-.088z" clip-rule="evenodd"/><path fill-rule="evenodd" d="M5 11a5 5 0 1110 0 1 1 0 11-2 0 3 3 0 10-6 0c0 1.677-.345 3.276-.968 4.729a1 1 0 11-1.838-.789A9.964 9.964 0 005 11zm8.921 2.012a1 1 0 01.831 1.145 19.86 19.86 0 01-.545 2.436 1 1 0 11-1.92-.558c.207-.713.371-1.445.49-2.192a1 1 0 011.144-.831z" clip-rule="evenodd"/></svg>
+        SPIFFE / SVID
+      </a>
+
+      <div class="nav-section-label">POLICIES</div>
+      <a href="#" class="nav-item" data-view="policies" id="nav-policies">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/></svg>
+        Policies
+        <span class="nav-badge" id="policy-count-badge">3</span>
+      </a>
+      <a href="#" class="nav-item nav-item-highlight" data-view="generator" id="nav-generator">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
+        AI Generator
+        <span class="nav-badge nav-badge-ai">TARS</span>
+      </a>
+      <a href="#" class="nav-item" data-view="evaluate" id="nav-evaluate">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        Evaluate
+      </a>
+
+      <div class="nav-section-label">OBSERVABILITY</div>
+      <a href="#" class="nav-item" data-view="audit" id="nav-audit">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11 4a1 1 0 10-2 0v4a1 1 0 102 0V7zm-3 1a1 1 0 10-2 0v3a1 1 0 102 0V8zM8 9a1 1 0 00-2 0v2a1 1 0 102 0V9z" clip-rule="evenodd"/></svg>
+        Audit Log
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="trust-domain-badge">
+        <div class="trust-dot"></div>
+        <span id="trust-domain-label">tetrate.io</span>
+      </div>
+      <div class="tars-status">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <circle cx="6" cy="6" r="5" stroke="#60a5fa" stroke-width="1.5"/>
+          <path d="M4 6l1.5 1.5L8 4" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>TARS Connected</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title" id="page-title">Dashboard</h1>
+        <div class="breadcrumb" id="breadcrumb">ZedID / Overview</div>
+      </div>
+      <div class="topbar-right">
+        <div class="search-box">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" class="search-icon"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+          <input type="text" placeholder="Search identities, policies..." class="search-input" id="global-search" />
+        </div>
+        <button class="btn-icon" title="Refresh" onclick="refreshData()">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/></svg>
+        </button>
+        <div class="user-avatar" title="Admin">A</div>
+      </div>
+    </header>
+
+    <!-- Views -->
+    <div class="view-container">
+
+      <!-- ===== DASHBOARD VIEW ===== -->
+      <div class="view active" id="view-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card stat-card-blue">
+            <div class="stat-icon">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/></svg>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" id="stat-identities">0</div>
+              <div class="stat-label">Total Identities</div>
+              <div class="stat-sub">Workloads, Humans, AI Agents</div>
+            </div>
+          </div>
+          <div class="stat-card stat-card-purple">
+            <div class="stat-icon">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" id="stat-policies">0</div>
+              <div class="stat-label">Active Policies</div>
+              <div class="stat-sub">Rego, Cedar, Istio</div>
+            </div>
+          </div>
+          <div class="stat-card stat-card-green">
+            <div class="stat-icon">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" id="stat-svids">0</div>
+              <div class="stat-label">Valid SVIDs</div>
+              <div class="stat-sub">SPIFFE Workload Identities</div>
+            </div>
+          </div>
+          <div class="stat-card stat-card-amber">
+            <div class="stat-icon">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" id="stat-audit">0</div>
+              <div class="stat-label">Audit Events</div>
+              <div class="stat-sub">Immutable decision log</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <!-- Identity breakdown -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Identity Inventory</h3>
+              <span class="card-badge">Live</span>
+            </div>
+            <div class="identity-breakdown" id="identity-breakdown">
+              <div class="breakdown-item">
+                <div class="breakdown-label">
+                  <span class="dot dot-blue"></span>Workloads
+                </div>
+                <div class="breakdown-bar-wrap">
+                  <div class="breakdown-bar" style="width:44%;background:var(--blue)"></div>
+                </div>
+                <span class="breakdown-count" id="bd-workload">0</span>
+              </div>
+              <div class="breakdown-item">
+                <div class="breakdown-label">
+                  <span class="dot dot-purple"></span>Humans
+                </div>
+                <div class="breakdown-bar-wrap">
+                  <div class="breakdown-bar" style="width:33%;background:var(--purple)"></div>
+                </div>
+                <span class="breakdown-count" id="bd-human">0</span>
+              </div>
+              <div class="breakdown-item">
+                <div class="breakdown-label">
+                  <span class="dot dot-amber"></span>AI Agents
+                </div>
+                <div class="breakdown-bar-wrap">
+                  <div class="breakdown-bar" style="width:22%;background:var(--amber)"></div>
+                </div>
+                <span class="breakdown-count" id="bd-agent">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Policy status -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Policy Health</h3>
+              <span class="card-badge card-badge-green">All Systems Go</span>
+            </div>
+            <div id="policy-health-list" class="policy-health-list">
+              <div class="loading-pulse">Loading policies...</div>
+            </div>
+          </div>
+
+          <!-- Zero Trust posture -->
+          <div class="card card-wide">
+            <div class="card-header">
+              <h3 class="card-title">Zero Trust Posture</h3>
+              <span class="card-badge">NIST SP 800-207</span>
+            </div>
+            <div class="posture-grid">
+              <div class="posture-item posture-ok">
+                <div class="posture-icon">✓</div>
+                <div class="posture-label">Identity Verification</div>
+                <div class="posture-desc">SPIFFE SVIDs active</div>
+              </div>
+              <div class="posture-item posture-ok">
+                <div class="posture-icon">✓</div>
+                <div class="posture-label">Policy Enforcement</div>
+                <div class="posture-desc">OPA engine running</div>
+              </div>
+              <div class="posture-item posture-ok">
+                <div class="posture-icon">✓</div>
+                <div class="posture-label">Deny by Default</div>
+                <div class="posture-desc">Zero implicit trust</div>
+              </div>
+              <div class="posture-item posture-ok">
+                <div class="posture-icon">✓</div>
+                <div class="posture-label">Audit Logging</div>
+                <div class="posture-desc">All decisions logged</div>
+              </div>
+              <div class="posture-item posture-ok">
+                <div class="posture-icon">✓</div>
+                <div class="posture-label">TARS AI Routing</div>
+                <div class="posture-desc">LLM governance active</div>
+              </div>
+              <div class="posture-item posture-warn">
+                <div class="posture-icon">⚠</div>
+                <div class="posture-label">mTLS Enforcement</div>
+                <div class="posture-desc">Requires Envoy proxy</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent identities table -->
+        <div class="card mt-4">
+          <div class="card-header">
+            <h3 class="card-title">Recent Identities</h3>
+            <button class="btn btn-sm" onclick="showView('identities')">View All →</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" id="recent-identities-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Kind</th>
+                  <th>Namespace</th>
+                  <th>Trust Level</th>
+                  <th>SPIFFE ID</th>
+                  <th>SVID TTL</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="recent-identities-body">
+                <tr><td colspan="7" class="loading-cell">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== IDENTITIES VIEW ===== -->
+      <div class="view" id="view-identities">
+        <div class="view-toolbar">
+          <div class="toolbar-left">
+            <input type="text" placeholder="Filter identities..." class="filter-input" id="identity-filter" oninput="filterIdentities()" />
+            <select class="filter-select" id="identity-kind-filter" onchange="filterIdentities()">
+              <option value="">All Kinds</option>
+              <option value="workload">Workload</option>
+              <option value="human">Human</option>
+              <option value="ai_agent">AI Agent</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="showCreateIdentityModal()">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+            New Identity
+          </button>
+        </div>
+        <div class="identity-cards-grid" id="identity-cards-grid">
+          <div class="loading-pulse">Loading identities...</div>
+        </div>
+      </div>
+
+      <!-- ===== SVID VIEW ===== -->
+      <div class="view" id="view-svid">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">SPIFFE / SVID Inspector</h3>
+            <span class="card-badge">SPIRE Workload API</span>
+          </div>
+          <p class="card-desc">Inspect and issue SPIFFE Verifiable Identity Documents (SVIDs) for workload identities. SVIDs are short-lived X.509 certificates that cryptographically prove workload identity.</p>
+          <div class="svid-inspector">
+            <div class="svid-form">
+              <label class="form-label">Select Workload Identity</label>
+              <select class="form-select" id="svid-identity-select">
+                <option value="">Choose a workload...</option>
+              </select>
+              <button class="btn btn-primary mt-2" onclick="fetchSvid()">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6.625 2.655A9 9 0 0119 11a1 1 0 11-2 0 7 7 0 00-9.625-6.492 1 1 0 11-.75-1.853z" clip-rule="evenodd"/></svg>
+                Issue SVID
+              </button>
+            </div>
+            <div class="svid-result" id="svid-result">
+              <div class="svid-placeholder">
+                <svg width="48" height="48" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                <p>Select a workload to inspect its SVID</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== POLICIES VIEW ===== -->
+      <div class="view" id="view-policies">
+        <div class="view-toolbar">
+          <div class="toolbar-left">
+            <input type="text" placeholder="Filter policies..." class="filter-input" id="policy-filter" oninput="filterPolicies()" />
+            <select class="filter-select" id="policy-status-filter" onchange="filterPolicies()">
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="draft">Draft</option>
+              <option value="disabled">Disabled</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="showView('generator')">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
+            Generate with AI
+          </button>
+        </div>
+        <div class="policy-list" id="policy-list">
+          <div class="loading-pulse">Loading policies...</div>
+        </div>
+      </div>
+
+      <!-- ===== AI GENERATOR VIEW ===== -->
+      <div class="view" id="view-generator">
+        <div class="generator-layout">
+          <div class="generator-form-panel">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <span class="tars-badge">TARS</span>
+                  AI Policy Generator
+                </h3>
+              </div>
+              <p class="card-desc">Describe your security intent in plain English. ZedID routes your request through Tetrate TARS to the optimal LLM and generates a production-ready policy.</p>
+
+              <div class="form-group">
+                <label class="form-label">Security Intent <span class="required">*</span></label>
+                <textarea class="form-textarea" id="gen-intent" rows="4"
+                  placeholder="e.g. Allow the checkout service to read inventory data but deny all write operations. Require trust level 2 or higher."></textarea>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Policy Format</label>
+                  <select class="form-select" id="gen-kind">
+                    <option value="rego">OPA Rego</option>
+                    <option value="cedar">AWS Cedar</option>
+                    <option value="rbac_yaml">RBAC YAML</option>
+                    <option value="istio_authz">Istio AuthorizationPolicy</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Access Model</label>
+                  <select class="form-select" id="gen-model">
+                    <option value="zero_trust">Zero Trust</option>
+                    <option value="abac">ABAC</option>
+                    <option value="rbac">RBAC</option>
+                    <option value="re_b_a_c">ReBAC</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Namespace</label>
+                <input type="text" class="form-input" id="gen-namespace" value="production" placeholder="production" />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Subjects (optional, comma-separated)</label>
+                <input type="text" class="form-input" id="gen-subjects" placeholder="spiffe://tetrate.io/ns/production/sa/checkout" />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Resources (optional, comma-separated)</label>
+                <input type="text" class="form-input" id="gen-resources" placeholder="inventory-service, payment-api" />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Actions (optional, comma-separated)</label>
+                <input type="text" class="form-input" id="gen-actions" placeholder="GET, LIST" />
+              </div>
+
+              <div class="quick-intents">
+                <div class="quick-label">Quick examples:</div>
+                <button class="quick-btn" onclick="setQuickIntent(0)">Checkout → Inventory (read-only)</button>
+                <button class="quick-btn" onclick="setQuickIntent(1)">AI Agent → TARS routing</button>
+                <button class="quick-btn" onclick="setQuickIntent(2)">Admin full access</button>
+                <button class="quick-btn" onclick="setQuickIntent(3)">Payment service isolation</button>
+              </div>
+
+              <button class="btn btn-primary btn-generate" id="generate-btn" onclick="generatePolicy()">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/></svg>
+                Generate Policy via TARS
+              </button>
+            </div>
+          </div>
+
+          <div class="generator-result-panel">
+            <div class="card h-full">
+              <div class="card-header">
+                <h3 class="card-title">Generated Policy</h3>
+                <div class="result-actions" id="result-actions" style="display:none">
+                  <button class="btn btn-sm" onclick="copyPolicy()">Copy</button>
+                  <button class="btn btn-sm btn-primary" onclick="savePolicy()">Save Policy</button>
+                </div>
+              </div>
+              <div id="generator-output">
+                <div class="generator-placeholder">
+                  <div class="placeholder-icon">
+                    <svg width="64" height="64" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="0.8">
+                      <path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/>
+                    </svg>
+                  </div>
+                  <h4>Ready to Generate</h4>
+                  <p>Describe your security intent and click "Generate Policy via TARS"</p>
+                  <div class="tars-flow">
+                    <div class="flow-step">Your Intent</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step flow-step-highlight">TARS Router</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">LLM</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">Validated Policy</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== EVALUATE VIEW ===== -->
+      <div class="view" id="view-evaluate">
+        <div class="evaluate-layout">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Policy Decision Engine</h3>
+              <span class="card-badge">OPA Compatible</span>
+            </div>
+            <p class="card-desc">Test policy decisions in real-time. Enter a subject, resource, and action to see which policy applies and whether access is granted.</p>
+            <div class="eval-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Subject (Identity)</label>
+                  <input type="text" class="form-input" id="eval-subject" value="spiffe://tetrate.io/ns/production/sa/checkout" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Resource</label>
+                  <input type="text" class="form-input" id="eval-resource" value="inventory-service" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Action</label>
+                  <input type="text" class="form-input" id="eval-action" value="GET" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Namespace</label>
+                  <input type="text" class="form-input" id="eval-namespace" value="production" />
+                </div>
+              </div>
+              <div class="eval-presets">
+                <div class="quick-label">Quick scenarios:</div>
+                <button class="quick-btn" onclick="setEvalPreset(0)">✓ Checkout reads inventory</button>
+                <button class="quick-btn" onclick="setEvalPreset(1)">✗ Checkout writes inventory</button>
+                <button class="quick-btn" onclick="setEvalPreset(2)">✓ AI agent routes via TARS</button>
+                <button class="quick-btn" onclick="setEvalPreset(3)">✗ Unknown service access</button>
+              </div>
+              <button class="btn btn-primary" onclick="evaluatePolicy()">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                Evaluate Decision
+              </button>
+            </div>
+          </div>
+
+          <div class="card" id="eval-result-card" style="display:none">
+            <div class="card-header">
+              <h3 class="card-title">Decision Result</h3>
+            </div>
+            <div id="eval-result"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Decision History</h3>
+            </div>
+            <div id="eval-history" class="eval-history"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== AUDIT VIEW ===== -->
+      <div class="view" id="view-audit">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Audit Log</h3>
+            <span class="card-badge">Immutable</span>
+          </div>
+          <div class="audit-stats-row" id="audit-stats-row">
+            <div class="audit-stat">
+              <span class="audit-stat-val" id="audit-total">0</span>
+              <span class="audit-stat-label">Total Events</span>
+            </div>
+            <div class="audit-stat">
+              <span class="audit-stat-val text-green" id="audit-allow">0</span>
+              <span class="audit-stat-label">Allowed</span>
+            </div>
+            <div class="audit-stat">
+              <span class="audit-stat-val text-red" id="audit-deny">0</span>
+              <span class="audit-stat-label">Denied</span>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Action</th>
+                  <th>Actor</th>
+                  <th>Resource</th>
+                  <th>Decision</th>
+                  <th>Reason</th>
+                </tr>
+              </thead>
+              <tbody id="audit-table-body">
+                <tr><td colspan="6" class="loading-cell">Loading audit events...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end view-container -->
+  </main>
+
+  <!-- Modal: Create Identity -->
+  <div class="modal-overlay" id="create-identity-modal" onclick="closeModal('create-identity-modal')">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Create New Identity</h3>
+        <button class="modal-close" onclick="closeModal('create-identity-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Name <span class="required">*</span></label>
+          <input type="text" class="form-input" id="new-identity-name" placeholder="e.g. payment-service" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Kind <span class="required">*</span></label>
+          <select class="form-select" id="new-identity-kind">
+            <option value="workload">Workload (SPIFFE/SVID)</option>
+            <option value="human">Human (OAuth2/JWT)</option>
+            <option value="ai_agent">AI Agent (TARS)</option>
+            <option value="service_account">Service Account</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Namespace <span class="required">*</span></label>
+          <input type="text" class="form-input" id="new-identity-namespace" value="production" />
+        </div>
+        <div class="form-group" id="email-field">
+          <label class="form-label">Email (for human identities)</label>
+          <input type="email" class="form-input" id="new-identity-email" placeholder="user@tetrate.io" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeModal('create-identity-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="createIdentity()">Create Identity</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notifications -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
