@@ -3,7 +3,7 @@
 <div align="center">
 
 ![ZedID Banner](https://img.shields.io/badge/ZedID-Zero%20Trust%20Identity-6366f1?style=for-the-badge&logo=rust)
-![Tetrate Buildathon 2026](https://img.shields.io/badge/Tetrate-Buildathon%202025-0ea5e9?style=for-the-badge)
+![Tetrate Buildathon 2026](https://img.shields.io/badge/Tetrate-Buildathon%202026-0ea5e9?style=for-the-badge)
 ![Rust](https://img.shields.io/badge/Rust-1.75%2B-f97316?style=for-the-badge&logo=rust)
 ![License](https://img.shields.io/badge/License-Apache%202.0-22c55e?style=for-the-badge)
 
@@ -384,7 +384,7 @@ Invoke-RestMethod http://localhost:8080/api/v1/health
 # Expected output:
 # status  service version timestamp
 # ------  ------- ------- ---------
-# healthy ZedID   0.1.0   2025-02-18T...
+# healthy ZedID   0.1.0   2026-02-18T...
 
 # List demo identities
 Invoke-RestMethod http://localhost:8080/api/v1/identities
@@ -615,7 +615,7 @@ Apache 2.0 — See [LICENSE](LICENSE) for details.
 
 <div align="center">
 
-Built with ❤️ in Rust for the **Tetrate Buildathon 2025**
+Built with ❤️ in Rust for the **Tetrate Buildathon 2026**
 
 *ZedID — Because every identity deserves a zero trust future.*
 
